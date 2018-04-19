@@ -17,24 +17,30 @@ getSQL <-
     if (!require('getPass'))
       install.packages('getPass')
     library('getPass')
-    vDriver <-
-      JDBC(driverClass = dClass, classPath = cPath)
+    if (missing(dClass)) {
+      dClass <- getPass(msg = "Enter the Driver Class: ")
+    }
+    if (missing(cPath)) {
+      cPath <- getPass(msg = "Enter the Class Path: ")
+    }
+    if (missing(connString)) {
+      cPath <- getPass(msg = "Enter the Connection String: ")
+    }
     if (missing(user)) {
-      usr <- getPass(msg = "Enter your Vertica username: ")
-    } else{
-      usr <- user
+      user <- getPass(msg = "Enter your Vertica username: ")
     }
     if (missing(password)) {
-      pwd <- getPass(msg = "Enter your Vertica password: ")
-    } else {
-      pwd <- password
+      password <- getPass(msg = "Enter your Vertica password: ")
     }
+    
+    vDriver <-
+      JDBC(driverClass = dClass, classPath = cPath)
     
     vertica <-
       dbConnect(vDriver,
                 connString,
-                usr,
-                pwd)
+                user,
+                password)
     queryResults <- dbGetQuery(vertica, sqlText)
     return(queryResults)
     
